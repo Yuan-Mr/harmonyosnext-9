@@ -1,59 +1,65 @@
-大家好！今天咱们来一起探索如何在华为HarmonyOS的AGC云函数服务中创建和配置函数，手把手教你用HTTP触发器玩转云函数。无论你是刚入门还是想优化现有功能，这篇指南都会给你清晰的指引，咱们直接上干货！👇
+### Hello everyone! Today, let's explore how to create and configure functions in Huawei HarmonyOS' AGC cloud function service, and teach you step-by-step how to use HTTP triggers to master cloud functions. Whether you're a beginner or looking to optimize existing features, this guide will provide you with clear instructions. Let's dive right in! 👇  
 
-🌟 一、云函数能做什么？
-云函数就像你的"云端小助手"，无需管理服务器就能运行代码。适合处理即时任务（比如用户提交表单后自动发邮件）、数据清洗或对接第三方API。HarmonyOS的AGC平台提供灵活配置，支持Node.js、Python、Java等多种语言，还能自定义运行环境哦！
 
-🛠️ 二、手把手创建第一个云函数
-​​Step 1：进入云函数控制台​​
+### 🌟 I. What Can Cloud Functions Do?  
+Cloud functions are like your "cloud assistant," allowing you to run code without managing servers. They're suitable for handling immediate tasks (such as automatically sending emails after users submit forms), data cleaning, or integrating with third-party APIs. HarmonyOS' AGC platform offers flexible configuration, supports multiple languages like Node.js, Python, and Java, and even allows custom runtime environments!  
 
-登录AGC控制台，选择你的项目。
-左侧导航栏找到「云开发 > 云函数」，点击「创建函数」。
-​​Step 2：配置基础信息​​
 
-​​函数名称​​：起个酷炫的名字！注意只能用小写字母、数字和中划线，比如my-first-function。
-​​触发方式​​：选「事件调用」才能用HTTP触发器（后续配置时会关联）。
-​​内存大小​​：按需选500MB到4GB，处理图片视频建议选大内存。
-​​运行环境​​：支持Node.js 14/18、Python3、Java 1.8，选你熟悉的语言。
-​​Step 3：编写函数代码​​
+### 🛠️ II. Hands-On: Create Your First Cloud Function  
+#### Step 1: Access the Cloud Function Console  
+1. Log in to the AGC console and select your project.  
+2. Find **Cloud Development > Cloud Functions** in the left navigation bar and click **Create Function**.  
 
-​​在线编辑​​（适合简单代码）：在WebIDE里直接写代码，支持语法高亮和自动补全。
+#### Step 2: Configure Basic Information  
+- **Function Name**: Choose a cool name! Note that only lowercase letters, numbers, and hyphens are allowed, e.g., `my-first-function`.  
+- **Trigger Type**: Select **Event Invocation** to use HTTP triggers (associated during subsequent configuration).  
+- **Memory Size**: Choose from 500MB to 4GB; larger memory is recommended for processing images or videos.  
+- **Runtime Environment**: Supports Node.js 14/18, Python 3, Java 1.8—pick your preferred language.  
 
-// Node.js示例：返回"Hello World!"
-exports.handler = async (event) => {
-  return { statusCode: 200, body: "Hello World!" };
-};
-​​上传ZIP包​​（适合复杂项目）：Java和自定义环境必须用ZIP，记得把入口文件放在根目录。
+#### Step 3: Write Function Code  
+- **Online Editing** (suitable for simple code): Write directly in WebIDE with syntax highlighting and auto-completion.  
+  ```javascript  
+  // Node.js example: Return "Hello World!"  
+  exports.handler = async (event) => {  
+    return { statusCode: 200, body: "Hello World!" };  
+  };  
+  ```  
+- **Upload ZIP Package** (suitable for complex projects): Java and custom environments must use ZIP; ensure the entry file is in the root directory.  
 
-​​Step 4：设置函数入口​​
+#### Step 4: Set Function Entry  
+Format: `filename.methodname`, e.g., `index.handler` for Node.js.  
+For Java users: The entry format is `packageName.className::methodName`, e.g., `com.example.Hello::handleRequest`.  
 
-格式为文件名.方法名，比如Node.js的index.handler。
-Java用户注意：入口格式是包名.类名::方法名，例如com.example.Hello::handleRequest。
-⚙️ 三、进阶配置：让函数更强大
-​​1. 环境变量：安全存储敏感信息​​
 
-在「配置 > 环境变量」里添加数据库密码、API密钥等。
+### ⚙️ III. Advanced Configuration: Empower Your Function  
+#### 1. Environment Variables: Secure Sensitive Information  
+Add database passwords, API keys, etc., in **Configuration > Environment Variables**.  
+Two editing modes:  
+- **Form Mode**: Directly fill in Key-Value, e.g., `DB_PASSWORD=123456`.  
+- **JSON Mode**: Batch import, e.g., `{ "KEY1": "value1", "KEY2": "value2" }`.  
 
-支持两种编辑方式：
+#### 2. Traffic Governance: Prevent Service Crashes  
+- **Load Balancing**: Select **Response Time Weight** to prioritize requests to the fastest instances.  
+- **Retry Policy**: Enable **jittered** policy for network fluctuations, automatically retrying at exponential intervals (up to 9 retries).  
+- **Circuit Breaker**: Set to pause requests for 1 minute when the error rate exceeds 50% within 10 seconds to avoid cascading failures.  
 
-​​表单模式​​：直接填Key-Value，比如DB_PASSWORD=123456。
-​​JSON模式​​：批量导入{ "KEY1": "value1", "KEY2": "value2" }。
-​​2. 流量治理：防止服务崩溃​​
+#### 3. Version Management: One-Click Rollback  
+- The system automatically generates snapshots when publishing new versions.  
+- Need to roll back? Directly switch to historical versions in the **Versions** list—super stable!  
 
-​​负载均衡​​：选「响应时间权值」让最快响应的实例优先处理请求。
-​​重试策略​​：遇到网络波动时，开启「jittered」策略，自动按指数间隔重试（最多重试9次）。
-​​熔断机制​​：设置当10秒内错误率超过50%时，暂停请求1分钟，避免雪崩效应。
-​​3. 版本管理：一键回滚不翻车​​
 
-每次发布新版本时，系统会自动生成快照。
-需要回滚？直接在「版本」列表切换历史版本，稳得很！
-🚀 四、实战：用HTTP触发器调用函数
-创建完函数后，在「触发器」页面绑定HTTP触发器。
-获取系统生成的URL，用Postman或前端代码发送GET/POST请求。
-测试返回结果，如果遇到超时（默认55秒），记得去「基础配置」调大超时时间。
-💡 五、避坑指南
-​​ZIP包上传失败​​：检查文件结构！Node.js/Python的入口文件必须放根目录，Java的包路径要和代码一致。
-​​内存不足报错​​：函数处理大文件时，内存选4GB更保险。
-​​环境变量不生效​​：修改后记得点「保存」，并等待10秒让配置生效。
-希望这篇指南能帮你轻松玩转HarmonyOS云函数！如果遇到问题，欢迎在评论区留言交流～ 也别忘了分享给你的开发小伙伴，一起解锁更多Serverless黑科技！🎉
+### 🚀 IV. Hands-On: Invoke Functions with HTTP Triggers  
+1. After creating the function, bind an HTTP trigger on the **Triggers** page.  
+2. Obtain the system-generated URL and send GET/POST requests using Postman or frontend code.  
+3. Test the return result; if timeout occurs (default 55 seconds), adjust the timeout period in **Basic Configuration**.  
 
-​​动手试试吧，你的第一个云函数正在等你召唤！​​ 🚀
+
+### 💡 V. Pitfall Prevention Guide  
+- **ZIP Package Upload Failure**: Check the file structure! Node.js/Python entry files must be in the root directory, and Java package paths must match the code.  
+- **Memory Insufficient Error**: When processing large files, choose 4GB memory for better stability.  
+- **Environment Variables Not Taking Effect**: Remember to click **Save** after modifications and wait 10 seconds for configurations to take effect.  
+
+
+Hope this guide helps you master HarmonyOS cloud functions with ease! If you encounter any issues, feel free to leave a comment to discuss~ Don't forget to share it with your developer peers and unlock more Serverless magic together! 🎉  
+
+Start trying now—your first cloud function is waiting for you to summon! 🚀
